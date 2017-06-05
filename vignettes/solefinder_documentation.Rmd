@@ -21,6 +21,7 @@ image(t(lena[512:1, ]), col = grey.colors(128))
 
 resize_image(lena, 1/4)
 
+##
 summary(c(lena))
 
 expand.grid(x = 1:512, y = 512:1) %>%
