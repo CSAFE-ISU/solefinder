@@ -1,0 +1,59 @@
+---
+title: "Extended Documentation"
+author: "Guillermo Basulto-Elias & Martin Silerio-Vazquez"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Documentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Resize Image
+
+```{r}
+
+library(solefinder)
+library(tidyverse)
+
+image(lena, col = grey.colors(128))
+image(t(lena[512:1, ]), col = grey.colors(128))
+
+resize_image(lena, 1/4)
+
+summary(c(lena))
+
+expand.grid(x = 1:512, y = 512:1) %>%
+  mutate(pixel = c(t(lena))) %>%
+  ggplot(aes(x, y)) +
+  geom_point(aes(color = pixel)) + 
+  scale_color_gradient(low = "black", high = "white")
+
+expand.grid(x = 1:512, y = 512:1) %>%
+  mutate(pixel = c(t(lena))) %>%
+  ggplot(aes(x, y)) +
+  geom_raster(aes(fill = pixel)) + 
+  scale_fill_gradient(low = "black", high = "white")
+
+
+```
+
+## EBImage
+
+```{r}
+
+if (!require(EBImage)) {
+  source("http://bioconductor.org/biocLite.R")
+  biocLite("EBImage")
+  library("EBImage")
+}
+
+library(solefinder)
+
+microbenchmark::microbenchmark(
+  EPImage = display(t(lena), method = "raster"),
+  Base = image(t(lena)[, 512:1]),
+  times = 100)
+
+```
+
