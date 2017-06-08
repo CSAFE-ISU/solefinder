@@ -74,12 +74,15 @@ img_filenames <- list.files(img_dir, pattern = ".tiff")
 img_adr <- paste0(img_dir, img_filenames)
 
 ## Read only onge image
-img <- readTIFF(img_adr[2])
+boot1 <- readTIFF(img_adr[1])
+boot2 <- readTIFF(img_adr[2])
 
 ## Display image
-display(t(img), method = "raster")
+display(t(boot1), method = "raster")
+display(t(boot2), method = "raster")
 
-
+save(boot1, file="boot1.rda")
+save(boot2, file="boot2.rda")
 
 
 ```
