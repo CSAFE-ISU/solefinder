@@ -54,7 +54,33 @@ library(solefinder)
 microbenchmark::microbenchmark(
   EPImage = display(t(lena), method = "raster"),
   Base = image(t(lena)[, 512:1]),
-  times = 100)
+  times = 10)
+
+```
+
+
+## Adding boots to package
+
+```{r, eval = FALSE}
+
+## Load packages to be used
+library(tiff)
+library(EBImage)
+
+## Setting images directory, reading image names and writing image
+## adresses.  
+img_dir <- c("../../") 
+img_filenames <- list.files(img_dir, pattern = ".tiff") 
+img_adr <- paste0(img_dir, img_filenames)
+
+## Read only onge image
+img <- readTIFF(img_adr[2])
+
+## Display image
+display(t(img), method = "raster")
+
+
+
 
 ```
 
