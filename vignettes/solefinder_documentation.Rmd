@@ -62,7 +62,7 @@ expand.grid(x = 1:512, y = 512:1) %>%
 
 ## EBImage
 
-```{r}
+```{r, eval = FALSE}
 
 if (!require(EBImage)) {
   source("http://bioconductor.org/biocLite.R")
