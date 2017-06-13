@@ -33,8 +33,8 @@ crop_image <- function (img, x_range = NULL, y_range = NULL) {
 ##' @author Guillermo Basulto-Elias
 ##' @export
 update_click <- function (ranges, click) {
-    x_new <- ranges$x[1] + click$x/diff(ranges$x)
-    y_new <- ranges$y[1] + click$y/diff(ranges$y)
-
+    x_new <- ranges$x[1] + click$x
+    y_new <- ranges$y[1] + click$y
+    
     data.frame(x = x_new, y = y_new)
 }
