@@ -24,15 +24,9 @@ In Ubuntu:
   `for img in $(find . -iname '*.tiff'); do echo -n "Inverting $img"; convert -negate $img $img && echo ' [Done]'; done`
 
 
-```{r}
-
-```
-
-
-
 ## Resize Image
 
-```{r}
+```{r, eval = FALSE}
 
 library(solefinder)
 library(tidyverse)

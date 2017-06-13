@@ -2,5 +2,4 @@
 
 export(crop_image)
 export(register_images)
-export(resize_image)
 export(update_click)
