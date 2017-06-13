@@ -90,7 +90,7 @@ library(EBImage)
 
 ## Setting images directory, reading image names and writing image
 ## adresses.  
-img_dir <- c("../../") 
+img_dir <- c("/home/guillermo/Desktop/tmp/") 
 img_filenames <- list.files(img_dir, pattern = ".tiff") 
 img_adr <- paste0(img_dir, img_filenames)
 
