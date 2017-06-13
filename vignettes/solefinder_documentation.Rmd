@@ -9,6 +9,27 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+## Converting Images to Grayscale
+
+It is convenient to invert the colors, since we are going to integrate out values and darker pixels are closer to value zero. Moreover, the each image should be transformed to gray scale.
+
+In Ubuntu: 
+
+1. First, we converted all the tiff files to grayscale using the following command line in Ubuntu's terminal.
+
+`for img in $(find . -iname '*.tiff'); do echo -n "Converting $img"; convert -colorspace GRAY $img $img && echo ' [Done]'; done`
+
+2. Invert the colors of the images to replace the white areas with black.
+
+  `for img in $(find . -iname '*.tiff'); do echo -n "Inverting $img"; convert -negate $img $img && echo ' [Done]'; done`
+
+
+```{r}
+
+```
+
+
+
 ## Resize Image
 
 ```{r}
