@@ -11,10 +11,12 @@
 ##' @return The registration of the two images
 ##' @author Martin Silerio-Vazquez
 ##' @export
-register_images <- function (img_orig, img_trans, img_orig_p1, img_orig_p2, img_trans_p1, img_trans_p2) {
+register_images <- function (img_orig, img_trans, img_orig_p1, img_orig_p2, img_orig_p3,
+                             img_trans_p1, img_trans_p2, img_trans_p3) {
 
   ## First thing, we need to compute the values of the parameters given
-  ## img_orig_p1, img_orig_p2, img_trans_p1 and img_trans_p2
+  ## img_orig_p1, img_orig_p2, img_orig_p3, img_trans_p1, img_trans_p2 and
+  ## img_orig_p3
 
 
 
