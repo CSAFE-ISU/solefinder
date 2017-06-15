@@ -20,6 +20,7 @@ register_images <- function (img_orig, img_trans, img_orig_p1, img_orig_p2, img_
   ## img_orig_p1, img_orig_p2, img_orig_p3, img_trans_p1, img_trans_p2 and
   ## img_orig_p3
 
+  ## First I need to double check the formulas I got from stack overflow...
 
 
     return(img_orig)
