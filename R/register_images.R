@@ -6,8 +6,10 @@
 ##' @param img_trans A matrix representing the translated image
 ##' @param img_orig_p1 Reference point 1 in the original image
 ##' @param img_orig_p2 Reference point 2 in the original image
+##' @param img_orig_p3 Reference point 3 in the original image
 ##' @param img_trans_p1 Reference point 1 in the translated image
 ##' @param img_trans_p2 Reference point 2 in the translated image
+##' @param img_trans_p3 Reference point 3 in the translated image
 ##' @return The registration of the two images
 ##' @author Martin Silerio-Vazquez
 ##' @export

@@ -4,8 +4,8 @@
 \alias{register_images}
 \title{Register Images}
 \usage{
-register_images(img_orig, img_trans, img_orig_p1, img_orig_p2, img_trans_p1,
-  img_trans_p2)
+register_images(img_orig, img_trans, img_orig_p1, img_orig_p2, img_orig_p3,
+  img_trans_p1, img_trans_p2, img_trans_p3)
 }
 \arguments{
 \item{img_orig}{A matrix representing the original image}
@@ -16,9 +16,13 @@ register_images(img_orig, img_trans, img_orig_p1, img_orig_p2, img_trans_p1,
 
 \item{img_orig_p2}{Reference point 2 in the original image}
 
+\item{img_orig_p3}{Reference point 3 in the original image}
+
 \item{img_trans_p1}{Reference point 1 in the translated image}
 
 \item{img_trans_p2}{Reference point 2 in the translated image}
+
+\item{img_trans_p3}{Reference point 3 in the translated image}
 }
 \value{
 The registration of the two images
