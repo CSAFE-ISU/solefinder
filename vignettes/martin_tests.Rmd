@@ -13,6 +13,24 @@ vignette: >
 
 library(solefinder)
 
+## Here I need to read a couple of images
+
+## Load packages to be used
+library(tiff)
+
+## Setting images directory, reading image names and writing image
+## adresses.  img_dir <-
+## c("/home/guillermo/Desktop/Shoe_data_everspry/") img_filenames <-
+## list.files(img_dir, pattern = ".tiff") img_adr <- paste0(img_dir,
+## img_filenames)
+
+## Read only onge image
+img <- tiff::readTIFF(img_adr[1])
+dim(img)
+
+## Print image with ruler
+image(img, col = gray.colors(128), axes = FALSE)
+
 ```
 
 Here I am just doing some test while programming required functions.
