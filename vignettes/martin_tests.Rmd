@@ -12,10 +12,29 @@ vignette: >
 ```{r, eval = FALSE}
 
 library(solefinder)
+library(EBImage)
 
 ## Here I need to read a couple of images
+img1 <- readImage("sandals_G_L_01.tiff")
+img2 <- readImage("sandals_M_L_01.tiff")
+
+display(img1,)
+display(img2,)
+display(img1, method = "raster")
+display(img2, method = "raster")
 
 
+# we read and display the image
+
+img1 <- readImage("sandals_G_L_01.tiff")
+
+display(img, method = "raster")
+
+print(img, short=TRUE)
+
+# we crop the image
+
+img_cropped <- img[161:(1965-160), 161:(4563-160)]
 
 
 
