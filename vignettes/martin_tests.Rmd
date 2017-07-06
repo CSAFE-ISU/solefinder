@@ -18,10 +18,15 @@ library(EBImage)
 img1 <- readImage("sandals_G_L_01.tiff")
 img2 <- readImage("sandals_M_L_01.tiff")
 
-display(img1,)
-display(img2,)
+display(img1)
+display(img2)
 display(img1, method = "raster")
 display(img2, method = "raster")
+
+
+img1_gray <- channel(img1, mode = "gray")
+img2_gray <- channel(img2, mode = "gray")
+
 
 
 # we read and display the image
