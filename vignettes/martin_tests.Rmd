@@ -12,6 +12,72 @@ vignette: >
 ```{r, eval = FALSE}
 
 library(solefinder)
+library(EBImage)
+
+## Here I need to read a couple of images
+img1 <- readImage("sandals_G_L_01.tiff")
+img2 <- readImage("sandals_M_L_01.tiff")
+
+display(img1)
+display(img2)
+display(img1, method = "raster")
+display(img2, method = "raster")
+
+
+img1_gray <- channel(img1, mode = "gray")
+img2_gray <- channel(img2, mode = "gray")
+
+display(img1_gray)
+display(img2_gray)
+
+# aux <- img1_gray
+# 
+# for(i in 1:500)
+#   for(j in 1:1000)
+#     aux[i,j] <- 0
+# 
+# display(aux)
+
+img1_cropped <- img1_gray[161:1805, 161:4403]
+img2_cropped <- img2_gray[161:1805, 161:4403]
+
+display(img1_cropped)
+display(img2_cropped)
+  
+writeImge(img1_cropped, )
+     
+
+
+
+# we read and display the image
+
+img1 <- readImage("sandals_G_L_01.tiff")
+
+display(img, method = "raster")
+
+print(img, short=TRUE)
+
+# we crop the image
+
+img_cropped <- img[161:(1965-160), 161:(4563-160)]
+
+
+
+## Load packages to be used
+library(tiff)
+
+## Setting images directory, reading image names and writing image
+## adresses.  img_dir <-
+## c("/home/guillermo/Desktop/Shoe_data_everspry/") img_filenames <-
+## list.files(img_dir, pattern = ".tiff") img_adr <- paste0(img_dir,
+## img_filenames)
+
+## Read only onge image
+img <- tiff::readTIFF(img_adr[1])
+dim(img)
+
+## Print image with ruler
+image(img, col = gray.colors(128), axes = FALSE)
 
 ```
 
