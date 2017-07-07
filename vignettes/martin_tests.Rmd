@@ -27,6 +27,26 @@ display(img2, method = "raster")
 img1_gray <- channel(img1, mode = "gray")
 img2_gray <- channel(img2, mode = "gray")
 
+display(img1_gray)
+display(img2_gray)
+
+# aux <- img1_gray
+# 
+# for(i in 1:500)
+#   for(j in 1:1000)
+#     aux[i,j] <- 0
+# 
+# display(aux)
+
+img1_cropped <- img1_gray[161:1805, 161:4403]
+img2_cropped <- img2_gray[161:1805, 161:4403]
+
+display(img1_cropped)
+display(img2_cropped)
+  
+writeImge(img1_cropped, )
+     
+
 
 
 # we read and display the image
