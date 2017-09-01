@@ -76,15 +76,18 @@ microbenchmark::microbenchmark(
 
 ## Adding boots to package
 
-```{r, eval = FALSE}
+```{R, eval = FALSE}
 
 ## Load packages to be used
 library(tiff)
 library(EBImage)
+library(tidyverse)
 
 ## Setting images directory, reading image names and writing image
 ## adresses.  
 img_dir <- c("/home/guillermo/Desktop/tmp/") 
+img_dir <- c("/home/guillermo/Desktop/Shoe_data_everspry/") 
+
 img_filenames <- list.files(img_dir, pattern = ".tiff") 
 img_adr <- paste0(img_dir, img_filenames)
 
@@ -96,9 +99,61 @@ boot2 <- readTIFF(img_adr[2])
 display(t(boot1), method = "raster")
 display(t(boot2), method = "raster")
 
+boot1 <- img_adr[1] %>% 
+    readTIFF() %>% 
+    .[-c(1:160, nrow(.) - 1:160 + 1),
+      -c(1:160, ncol(.) - 1:160 + 1)] 
+
+boot1[boot1 < 0.3] <- 0
+
+boot1 %>% display(method = "raster")
+boot1 %>% flip() %>% display(method = "raster")
+boot1 %>% flop() %>% display(method = "raster")
+boot1 %>% rotate(30) %>% display(method = "raster")
+boot1 %>% rotate(135) %>% display(method = "raster")
+boot1 %>% EBImage::transpose() %>% display(method = "raster")
+
+
 save(boot1, file="boot1.rda")
 save(boot2, file="boot2.rda")
 
 
 ```
 
+```{r}
+
+## Crop images
+
+## Check if EBImage package is installed, if not, it will install it.
+if (!require(EBImage)) {
+  source("http://bioconductor.org/biocLite.R")
+  biocLite("EBImage")
+  library("EBImage")
+}
+
+## Load other packages
+library(dplyr)
+library(tiff)
+
+## Setting images directory, reading image names and writing image
+## adresses.  
+img_dir <- c("/home/guillermo/Desktop/shoes_copy/") 
+
+## Get filenames and create image addresses
+img_filenames <- list.files(img_dir, pattern = ".tiff")
+img_adr <- paste0(img_dir, img_filenames)
+
+## Show the first image files
+head(img_filenames)
+
+## Read sample shoe
+shoe <- readTIFF(img_adr[1])
+display(shoe, method = "raster")
+
+## Change to gray scale
+shoe <- channel(shoe, "gray")
+display(shoe, method = "raster", all = TRUE)
+
+
+
+```
