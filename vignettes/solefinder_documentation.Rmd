@@ -21,7 +21,11 @@ In Ubuntu:
 
 2. Invert the colors of the images to replace the white areas with black.
 
-  `for img in $(find . -iname '*.tiff'); do echo -n "Inverting $img"; convert -negate $img $img && echo ' [Done]'; done`
+`for img in $(find . -iname '*.tiff'); do echo -n "Inverting $img"; convert -negate $img $img && echo ' [Done]'; done`
+
+3. Remove ruler. The original images obtained with the shoe scanner are 1965x4563. The resulting images after croppig the ruler out are 1645x4243.
+
+`for img in $(find . -iname '*.tiff'); do echo -n "Cropping $img"; convert -crop 1645x4243+160+160 $img $img && echo ' [Done]'; done`
 
 
 ## Resize Image
@@ -120,7 +124,7 @@ save(boot2, file="boot2.rda")
 
 ```
 
-```{r}
+```{r, eval = FALSE}
 
 ## Crop images
 
@@ -147,12 +151,50 @@ img_adr <- paste0(img_dir, img_filenames)
 head(img_filenames)
 
 ## Read sample shoe
-shoe <- readTIFF(img_adr[1])
+shoe <- readImage(img_adr[20])
 display(shoe, method = "raster")
 
-## Change to gray scale
-shoe <- channel(shoe, "gray")
-display(shoe, method = "raster", all = TRUE)
+## ## Change to gray scale
+## shoe %>% channel(mode = "gray") %>% display(method = "raster", all = TRUE)
+
+## Crop ruler
+shoe <- shoe %>%
+    .[-c(1:160, nrow(.) - 1:160 + 1),
+     -c(1:160, ncol(.) - 1:160 + 1)] 
+display(shoe, method = "raster")
+
+
+## Remove some noise
+threshold <- 0.8
+shoe[shoe > threshold] <- threshold
+shoe <- shoe %>%
+    {(. - min(.))/(max(.) - min(.))}
+display(shoe, method = "raster")
+
+
+
+
+crop_and_reduce_noise <- function (img_adress) {
+    ## Read sample shoe
+    shoe <- readImage(img_adress)
+    
+## ## Change to gray scale
+    ## shoe %>% channel(mode = "gray") %>% display(method = "raster", all = TRUE)
+    
+    ## Crop ruler
+    shoe <- shoe %>%
+        .[-c(1:160, nrow(.) - 1:160 + 1),
+          -c(1:160, ncol(.) - 1:160 + 1)] 
+    
+    ## Remove some noise
+    threshold <- 0.8
+    shoe[shoe > threshold] <- threshold
+    shoe <- shoe %>%
+        {(. - min(.))/(max(.) - min(.))}
+    
+    write
+}
+
 
 
 
