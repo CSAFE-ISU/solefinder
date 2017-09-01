@@ -44,7 +44,8 @@ img2_cropped <- img2_gray[161:1805, 161:4403]
 display(img1_cropped)
 display(img2_cropped)
   
-writeImge(img1_cropped, )
+writeImage(img1_cropped, "img1.tiff", compression = "none")
+writeImage(img2_cropped, "img2.tiff", compression = "none")
      
 
 
