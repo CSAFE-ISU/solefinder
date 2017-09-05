@@ -47,7 +47,18 @@ display(img2_cropped)
 writeImage(img1_cropped, "img1.tiff", compression = "none")
 writeImage(img2_cropped, "img2.tiff", compression = "none")
      
+# let's fill out the points we will use to make tests
+P1 <- matrix(c(1198, 750, 1,
+                528, 1913, 1,
+                797, 2819, 1),
+             3, 3)
 
+P2 <- matrix(c(1529, 1109, 1,
+                750, 2244, 1,
+                963, 3206, 1),
+             3, 3)
+
+T <- P2 %*% solve(P1)
 
 
 # we read and display the image
