@@ -1,3 +1,18 @@
+
+# read_image <- function (infile) {
+#
+#     img1 <- reactive({
+#         infile <- input$img1
+#
+#         if (is.null(infile)) return (NULL)
+#
+#         file.copy(infile$datapath,
+#                   paste0(infile$datapath, ".tiff"))
+#
+#         readImage(paste0(infile$datapath, ".tiff"))
+#     })
+# }
+
 ##' Crop Image
 ##'
 ##' Crop an image on x and y. It is careful with NULL and out-of-range
@@ -35,6 +50,6 @@ crop_image <- function (img, x_range = NULL, y_range = NULL) {
 update_click <- function (ranges, click) {
     x_new <- ranges$x[1] + click$x
     y_new <- ranges$y[1] + click$y
-    
+
     data.frame(x = x_new, y = y_new)
 }
