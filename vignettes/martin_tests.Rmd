@@ -11,7 +11,7 @@ vignette: >
 
 ```{r, eval = FALSE}
 
-computeTranformation <- function(points_1, points_2)
+computeTransformationMatrix <- function(points_1, points_2)
 {
   
   
@@ -49,8 +49,8 @@ if(y1==y2)
   y2 <- y1 + 1
 
 M <- matrix(c(img_1[x1,y1], img_1[x2,y1], img_1[x1,y2], img_1[x2,y2]),2,2)
-X <- matrix(c(x2-x, x-x1),2,1)
-Y <- matrix(c(y2-y, y-y1),1,2)
+X <- matrix(c(x2-x, x-x1),1,2)
+Y <- matrix(c(y2-y, y-y1),2,1)
 
 return(1/((x2-x1)*(y2-y1))*X%*%M%*%Y)
   
@@ -65,16 +65,19 @@ tranformImage <- function(n_col, n_row, img_1, img_2, points_1, points_2)
   
   T <- computeTransformationMatrix(points_1, points_2)
   for(i in 1:n_col)
-    for(j in 1:n_ren)
+  {
+  print(i)
+    for(j in 1:n_row)
     {
       
-      p <- c(i,j)
+      p <- matrix(c(i,j,1),3,1)
       Tp <- T%*%p
       
-      img_3[i,j] <- extrapolate(img_1, n_col, n_row, min_val, Tp)
+      img_3[i,j] <- extrapolate(img_1, n_col, n_row, min_val, Tp[-3])
       
       
     }
+  }
   
 }
 
@@ -119,6 +122,14 @@ display(img2_cropped_neg)
   
 writeImage(img1_cropped_neg, "img1.tiff", compression = "none")
 writeImage(img2_cropped_neg, "img2.tiff", compression = "none")
+
+n_col <- nrow(img1_cropped_neg)
+n_row <- ncol(img1_cropped_neg)
+  
+points_1 <- c(1198, 750, 528, 1913, 797, 2819)
+points_2 <- c(1529, 1109, 750, 2244, 963, 3206)
+
+tranformImage(n_col, n_row, img1_cropped_neg, img2_cropped_neg, points_1, points_2)
      
 # let's fill out the points we will use to make tests
 P1 <- matrix(c(1198, 750, 1,
