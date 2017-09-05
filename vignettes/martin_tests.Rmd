@@ -11,6 +11,73 @@ vignette: >
 
 ```{r, eval = FALSE}
 
+computeTranformation <- function(points_1, points_2)
+{
+  
+  
+P1 <- matrix(c(points_1[1], points_1[2], 1,
+               points_1[3], points_1[4], 1,
+               points_1[5], points_1[6], 1),
+             3, 3)
+
+P2 <- matrix(c(points_2[1], points_2[2], 1,
+               points_2[3], points_2[4], 1,
+               points_2[5], points_2[6], 1),
+             3, 3)
+
+T <- P1 %*% solve(P2)
+
+return(T)
+  
+}
+
+extrapolate <- function(img_1, n_col, n_row, min_val, Tp)
+{
+  
+if(Tp[1] < 1 | Tp[1] > n_col | Tp[2] < 1 | Tp[2] > n_row)
+  return(min_val)
+  
+x <- Tp[1]
+y <- Tp[2]
+x1 <- floor(x)
+x2 <- ceiling(x)
+if(x1==x2)
+  x2 <- x1 + 1
+y1 <- floor(y)
+y2 <- ceiling(y)
+if(y1==y2)
+  y2 <- y1 + 1
+
+M <- matrix(c(img_1[x1,y1], img_1[x2,y1], img_1[x1,y2], img_1[x2,y2]),2,2)
+X <- matrix(c(x2-x, x-x1),2,1)
+Y <- matrix(c(y2-y, y-y1),1,2)
+
+return(1/((x2-x1)*(y2-y1))*X%*%M%*%Y)
+  
+}
+
+tranformImage <- function(n_col, n_row, img_1, img_2, points_1, points_2)
+{
+  
+  img_3 <- img_2
+  
+  min_val <- min(img_1)
+  
+  T <- computeTransformationMatrix(points_1, points_2)
+  for(i in 1:n_col)
+    for(j in 1:n_ren)
+    {
+      
+      p <- c(i,j)
+      Tp <- T%*%p
+      
+      img_3[i,j] <- extrapolate(img_1, n_col, n_row, min_val, Tp)
+      
+      
+    }
+  
+}
+
 library(solefinder)
 library(EBImage)
 
@@ -43,9 +110,15 @@ img2_cropped <- img2_gray[161:1805, 161:4403]
 
 display(img1_cropped)
 display(img2_cropped)
+
+img1_cropped_neg <- max(img1_cropped) - img1_cropped
+img2_cropped_neg <- max(img2_cropped) - img2_cropped
+
+display(img1_cropped_neg)
+display(img2_cropped_neg)
   
-writeImage(img1_cropped, "img1.tiff", compression = "none")
-writeImage(img2_cropped, "img2.tiff", compression = "none")
+writeImage(img1_cropped_neg, "img1.tiff", compression = "none")
+writeImage(img2_cropped_neg, "img2.tiff", compression = "none")
      
 # let's fill out the points we will use to make tests
 P1 <- matrix(c(1198, 750, 1,
