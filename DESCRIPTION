@@ -13,3 +13,7 @@ RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+LinkingTo:
+    RcppArmadillo,
+    Rcpp
+Imports: Rcpp
