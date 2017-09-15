@@ -79,6 +79,8 @@ tranformImage <- function(n_col, n_row, img_1, img_2, points_1, points_2)
     }
   }
   
+  return(img_3)
+  
 }
 
 library(solefinder)
@@ -120,8 +122,8 @@ img2_cropped_neg <- max(img2_cropped) - img2_cropped
 display(img1_cropped_neg)
 display(img2_cropped_neg)
   
-writeImage(img1_cropped_neg, "img1.tiff", compression = "none")
-writeImage(img2_cropped_neg, "img2.tiff", compression = "none")
+writeImage(img1_cropped_neg, "img1.tiff", compression = "none", bits.per.sample = 8)
+writeImage(img2_cropped_neg, "img2.tiff", compression = "none" , bits.per.sample = 8)
 
 n_col <- nrow(img1_cropped_neg)
 n_row <- ncol(img1_cropped_neg)
@@ -129,7 +131,17 @@ n_row <- ncol(img1_cropped_neg)
 points_1 <- c(1198, 750, 528, 1913, 797, 2819)
 points_2 <- c(1529, 1109, 750, 2244, 963, 3206)
 
-tranformImage(n_col, n_row, img1_cropped_neg, img2_cropped_neg, points_1, points_2)
+## Here I need to read a couple of images
+img1_cropped_neg <- readImage("img1_smaller.tiff")
+img2_cropped_neg <- readImage("img2_smaller.tiff")
+
+
+img_t <- tranformImage(206, 530, img1_cropped_neg, img2_cropped_neg, points_1/8, points_2/8)
+
+display(img_t)
+
+display(img1_cropped_neg)
+display(img2_cropped_neg)
      
 # let's fill out the points we will use to make tests
 P1 <- matrix(c(1198, 750, 1,
