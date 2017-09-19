@@ -41,9 +41,14 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP solefinder_fourierin_1d_cpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+RcppExport SEXP solefinder_fourierin_1d_nonregular_cpp(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+
 static const R_CallMethodDef CallEntries[] = {
     {"_solefinder_fourierin_1d_cpp", (DL_FUNC) &_solefinder_fourierin_1d_cpp, 7},
     {"_solefinder_fourierin_1d_nonregular_cpp", (DL_FUNC) &_solefinder_fourierin_1d_nonregular_cpp, 7},
+    {"solefinder_fourierin_1d_cpp",            (DL_FUNC) &solefinder_fourierin_1d_cpp,            7},
+    {"solefinder_fourierin_1d_nonregular_cpp", (DL_FUNC) &solefinder_fourierin_1d_nonregular_cpp, 7},
     {NULL, NULL, 0}
 };
 
