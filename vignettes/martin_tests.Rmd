@@ -149,6 +149,27 @@ display(img2_cropped_neg)
 writeImage(img1_cropped_neg, "img1_show.tiff", compression = "none", bits.per.sample = 8)
 writeImage(img2_cropped_neg, "img2_show.tiff", compression = "none" , bits.per.sample = 8)
 writeImage(img_t, "imgt_show.tiff", compression = "none" , bits.per.sample = 8)
+
+
+# Here I will make a test to get the automatic alignment
+
+# first we compute the centers
+
+n_ren <- dim(img1_cropped_neg)[2]
+n_col <- dim(img1_cropped_neg)[1]
+
+avg_ren <- sum((img1_cropped_neg > 0) * (1:n_ren))/(sum(img1_cropped_neg > 0))
+avg_col <- sum((t(img1_cropped_neg) > 0) * (1:n_col))/(sum(img1_cropped_neg > 0))
+
+# and then we compute the corresponding slope
+
+y <- array( (img1_cropped_neg > 0.8) * (1:n_ren))
+y <- y[y > 0]
+
+x <- array(t(t(img1_cropped_neg > 0.8) * (1:n_col)))
+x <- x[x > 0]
+
+plot(x,y)
      
 # let's fill out the points we will use to make tests
 P1 <- matrix(c(1198, 750, 1,
