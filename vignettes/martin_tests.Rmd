@@ -183,15 +183,20 @@ for(j in 1:n_ren){
     img1_aux[i, j] <- max_value
 }
 
-for(j in 1:n_ren){
-  i <- round((linear2$coefficients[2])*(j - linear$coefficients[1]))
-  if(1 <= i && i<=n_col)
-    img1_aux[i, j] <- max_value
-}
-
 display(img1_aux)
 
+
 linear2 <- lm(x ~ y)
+
+img2_aux <- img1_cropped_neg
+
+for(j in 1:n_ren){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    img2_aux[i, j] <- max_value
+}
+
+display(img2_aux)
      
 # let's fill out the points we will use to make tests
 P1 <- matrix(c(1198, 750, 1,
