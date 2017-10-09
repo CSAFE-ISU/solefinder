@@ -197,7 +197,97 @@ for(j in 1:n_ren){
 }
 
 display(img2_aux)
-     
+
+writeImage(img2_aux, "img1_axis.tiff", compression = "none" , bits.per.sample = 8)
+
+## we need to find the coordinates of the pixels where the axis crosses the edge
+
+ren_upper <- 0
+col_upper <- 0
+ren_lower <- 0
+col_lower <- 0
+
+for(j in 1:n_ren){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    if(img1_cropped_neg[i,j] > 0.8) {
+    ren_upper <- j
+    col_upper <- i
+    break
+    }
+}
+
+for(j in n_ren:1){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    if(img1_cropped_neg[i,j] > 0.8) {
+    ren_lower <- j
+    col_lower <- i
+    break
+    }
+}
+
+ren_middle <- round(mean(y))
+col_middle <- round(mean(x))
+
+
+
+
+#let's do the same with the image 2
+
+# first we compute the centers
+
+n_ren <- dim(img2_cropped_neg)[2]
+n_col <- dim(img2_cropped_neg)[1]
+
+avg_ren <- sum((t(img2_cropped_neg) > 0) * (1:n_ren))/(sum(img2_cropped_neg > 0))
+avg_col <- sum((img2_cropped_neg > 0) * (1:n_col))/(sum(img2_cropped_neg > 0))
+
+# and then we compute the corresponding slope
+
+y <- array( t(t(img2_cropped_neg > 0.8) * (1:n_ren)))
+y <- y[y > 0]
+
+x <- array((img2_cropped_neg > 0.8) * (1:n_col))
+x <- x[x > 0]
+
+plot(x,-y)
+
+linear <- lm(y ~ x)
+
+#Now let's mark the axis we found in the image
+img1_aux <- img2_cropped_neg
+max_value <- max(img1_aux)
+
+for(j in 1:n_ren){
+  i <- round((1/linear$coefficients[2])*(j - linear$coefficients[1]))
+  if(1 <= i && i<=n_col)
+    img1_aux[i, j] <- max_value
+}
+
+display(img1_aux)
+
+
+linear2 <- lm(x ~ y)
+
+img2_aux <- img2_cropped_neg
+
+for(j in 1:n_ren){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    img2_aux[i, j] <- max_value
+}
+
+display(img2_aux) 
+
+writeImage(img2_aux, "img2_axis.tiff", compression = "none" , bits.per.sample = 8)
+
+
+
+
+
+
+
 # let's fill out the points we will use to make tests
 P1 <- matrix(c(1198, 750, 1,
                 528, 1913, 1,
