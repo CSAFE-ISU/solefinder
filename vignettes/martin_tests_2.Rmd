@@ -147,13 +147,17 @@ library(solefinder)
 library(EBImage)
 
 ## This code is to be able to plot images in the RStudio plot box
+plot(1:10,1:10)
 imgcol = readImage(system.file("images", "sample-color.png", package="EBImage"))
-display(imgcol)
+display(imgcol, method = 'raster')
 
 
 ## Here I need to read a couple of images
 img1 <- readImage("sandals_G_L_01.tiff")
 img2 <- readImage("sandals_M_L_01.tiff")
+
+img1 <- readImage("test3.tif")
+img2 <- readImage("test4.tif")
 
 display(img1)
 display(img2)
@@ -187,8 +191,8 @@ img2_cropped_neg <- max(img2_cropped) - img2_cropped
 display(img1_cropped_neg)
 display(img2_cropped_neg)
   
-writeImage(img1_cropped_neg, "img1.tiff", compression = "none", bits.per.sample = 8)
-writeImage(img2_cropped_neg, "img2.tiff", compression = "none" , bits.per.sample = 8)
+writeImage(img1_cropped_neg, "img3_b.tiff", compression = "none", bits.per.sample = 8)
+writeImage(img2_cropped_neg, "img4_b.tiff", compression = "none" , bits.per.sample = 8)
 
 n_col <- nrow(img1_cropped_neg)
 n_row <- ncol(img1_cropped_neg)
