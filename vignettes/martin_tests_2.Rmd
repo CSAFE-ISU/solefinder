@@ -156,8 +156,8 @@ display(imgcol, method = 'raster')
 img1 <- readImage("sandals_G_L_01.tiff")
 img2 <- readImage("sandals_M_L_01.tiff")
 
-img1 <- readImage("test3.tif")
-img2 <- readImage("test4.tif")
+img1 <- readImage("test5.tif")
+img2 <- readImage("test6.tif")
 
 display(img1)
 display(img2)
@@ -191,8 +191,8 @@ img2_cropped_neg <- max(img2_cropped) - img2_cropped
 display(img1_cropped_neg)
 display(img2_cropped_neg)
   
-writeImage(img1_cropped_neg, "img3_b.tiff", compression = "none", bits.per.sample = 8)
-writeImage(img2_cropped_neg, "img4_b.tiff", compression = "none" , bits.per.sample = 8)
+writeImage(img1_cropped_neg, "img5_b.tiff", compression = "none", bits.per.sample = 8)
+writeImage(img2_cropped_neg, "img6_b.tiff", compression = "none" , bits.per.sample = 8)
 
 n_col <- nrow(img1_cropped_neg)
 n_row <- ncol(img1_cropped_neg)
@@ -201,8 +201,8 @@ points_1 <- c(1198, 750, 528, 1913, 797, 2819)
 points_2 <- c(1529, 1109, 750, 2244, 963, 3206)
 
 ## Here I need to read a couple of images
-img1_cropped_neg <- readImage("img1_smaller.tiff")
-img2_cropped_neg <- readImage("img2_smaller.tiff")
+img1_cropped_neg <- readImage("img5_b_smaller.tif")
+img2_cropped_neg <- readImage("img6_b_smaller.tif")
 
 img1_cropped_neg[img1_cropped_neg < 0.2] <- 0
 img2_cropped_neg[img2_cropped_neg < 0.2] <- 0
