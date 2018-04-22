@@ -5,7 +5,7 @@
 
 preProcessTIFF <- function(fileList) {
 
-  n < length(fileList)
+  n <- length(fileList)
 
   for(i in 1:n) {
     fileName <- fileList[i]
@@ -17,3 +17,13 @@ preProcessTIFF <- function(fileList) {
   }
 
 }
+
+library(solefinder)
+library(EBImage)
+
+fileName <- "002054L_20171027_2_1_1_csafe_tpashek.tif"
+img <- readImage(paste0("/IN","/",fileName))
+img_gray <- channel(img, mode = "gray")
+img_cropped <- img1_gray[161:1805, 161:4403]
+img_cropped_neg <- max(img_cropped) - img_cropped
+writeImage(img_cropped_neg, paste0("\\OUT","\\",fileName), compression = "none", bits.per.sample = 8)
