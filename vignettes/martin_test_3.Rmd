@@ -1,0 +1,463 @@
+---
+title: "Martin's tests"
+author: "Martin"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Martin tests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, eval = FALSE}
+
+computeTransformationMatrix <- function(points_1, points_2)
+{
+  
+  
+P1 <- matrix(c(points_1[1], points_1[2], 1,
+               points_1[3], points_1[4], 1,
+               points_1[5], points_1[6], 1),
+             3, 3)
+
+P2 <- matrix(c(points_2[1], points_2[2], 1,
+               points_2[3], points_2[4], 1,
+               points_2[5], points_2[6], 1),
+             3, 3)
+
+T <- P1 %*% solve(P2)
+
+return(T)
+  
+}
+
+computeTransformationMatrix2P <- function(points_1, points_2)
+{
+  
+  T <- matrix(c(1,0,0,
+                0,1,0,
+                points_1[1]-points_2[1],points_1[2]-points_2[2],1),
+              3,3)
+  
+  cos_ang <- ((points_2[3]-points_2[1])*(points_1[3]-points_1[1])+
+              (points_2[4]-points_2[2])*(points_1[4]-points_1[2]))/
+    ((sqrt((points_2[3]-points_2[1])^2+(points_2[4]-points_2[2])^2))*
+     (sqrt((points_1[3]-points_1[1])^2+(points_1[4]-points_1[2])^2)))
+    
+  R <- matrix(c(cos_ang,-sqrt(1-cos_ang),0,
+                sqrt(1-cos_ang),cos_ang,0,
+                0,0,1),
+              3,3)
+    
+  # S <- matrix(c(abs(points_2[3]-points_2[1])/abs(points_1[3]-points_1[1]),0,0,
+  #               0,abs(points_2[4]-points_2[2])/abs(points_1[4]-points_1[2]),0,
+  #               0,0,1),
+  #             3,3)
+  
+  S <- matrix(c(1,0,0,
+                0,1,0,
+                0,0,1),
+              3,3)
+
+return(T%*%R%*%S)
+  
+}
+
+extrapolate <- function(img_1, n_col, n_row, min_val, Tp)
+{
+  
+if(Tp[1] < 1 | Tp[1] > n_col | Tp[2] < 1 | Tp[2] > n_row)
+  return(min_val)
+  
+x <- Tp[1]
+y <- Tp[2]
+x1 <- floor(x)
+x2 <- ceiling(x)
+if(x1==x2)
+  x2 <- x1 + 1
+y1 <- floor(y)
+y2 <- ceiling(y)
+if(y1==y2)
+  y2 <- y1 + 1
+
+M <- matrix(c(img_1[x1,y1], img_1[x2,y1], img_1[x1,y2], img_1[x2,y2]),2,2)
+X <- matrix(c(x2-x, x-x1),1,2)
+Y <- matrix(c(y2-y, y-y1),2,1)
+
+return(1/((x2-x1)*(y2-y1))*X%*%M%*%Y)
+  
+}
+
+transformImage <- function(n_col, n_row, img_1, img_2, points_1, points_2)
+{
+  
+  img_3 <- img_2
+  
+  min_val <- min(img_1)
+  
+  T <- computeTransformationMatrix(points_1, points_2)
+  for(i in 1:n_col)
+  {
+  print(i)
+    for(j in 1:n_row)
+    {
+      
+      p <- matrix(c(i,j,1),3,1)
+      Tp <- T%*%p
+      
+      img_3[i,j] <- extrapolate(img_1, n_col, n_row, min_val, Tp[-3])
+      
+      
+    }
+  }
+  
+  return(img_3)
+  
+}
+
+transformImage2P <- function(n_col, n_row, img_1, img_2, points_1, points_2) {
+  
+  img_3 <- img_2
+  
+  min_val <- min(img_1)
+  
+  T <- computeTransformationMatrix2P(points_1, points_2)
+  for(i in 1:n_col)
+  {
+  print(i)
+    for(j in 1:n_row)
+    {
+      
+      p <- matrix(c(i,j,1),3,1)
+      Tp <- T%*%p
+      
+      img_3[i,j] <- extrapolate(img_1, n_col, n_row, min_val, Tp[-3])
+      
+      
+    }
+  }
+  
+  return(img_3)
+  
+}
+
+
+
+library(solefinder)
+library(EBImage)
+
+## This code is to be able to plot images in the RStudio plot box
+imgcol = readImage(system.file("images", "sample-color.png", package="EBImage"))
+display(imgcol)
+
+
+## Here I need to read a couple of images
+img1 <- readImage("sandals_G_L_01.tiff")
+img2 <- readImage("sandals_M_L_01.tiff")
+
+display(img1)
+display(img2)
+display(img1, method = "raster")
+display(img2, method = "raster")
+
+
+img1_gray <- channel(img1, mode = "gray")
+img2_gray <- channel(img2, mode = "gray")
+
+display(img1_gray)
+display(img2_gray)
+
+# aux <- img1_gray
+# 
+# for(i in 1:500)
+#   for(j in 1:1000)
+#     aux[i,j] <- 0
+# 
+# display(aux)
+
+img1_cropped <- img1_gray[161:1805, 161:4403]
+img2_cropped <- img2_gray[161:1805, 161:4403]
+
+display(img1_cropped)
+display(img2_cropped)
+
+img1_cropped_neg <- max(img1_cropped) - img1_cropped
+img2_cropped_neg <- max(img2_cropped) - img2_cropped
+
+display(img1_cropped_neg)
+display(img2_cropped_neg)
+  
+writeImage(img1_cropped_neg, "img1.tiff", compression = "none", bits.per.sample = 8)
+writeImage(img2_cropped_neg, "img2.tiff", compression = "none" , bits.per.sample = 8)
+
+n_col <- nrow(img1_cropped_neg)
+n_row <- ncol(img1_cropped_neg)
+  
+points_1 <- c(1198, 750, 528, 1913, 797, 2819)
+points_2 <- c(1529, 1109, 750, 2244, 963, 3206)
+
+## Here I need to read a couple of images
+img1_cropped_neg <- readImage("img1_smaller.tiff")
+img2_cropped_neg <- readImage("img2_smaller.tiff")
+
+img1_cropped_neg[img1_cropped_neg < 0.2] <- 0
+img2_cropped_neg[img2_cropped_neg < 0.2] <- 0
+
+
+img_t <- transformImage(206, 530, img1_cropped_neg, img2_cropped_neg, points_1/8, points_2/8)
+
+display(img_t, method = "raster")
+
+display(img1_cropped_neg)
+display(img2_cropped_neg)
+
+writeImage(img1_cropped_neg, "img1_show.tiff", compression = "none", bits.per.sample = 8)
+writeImage(img2_cropped_neg, "img2_show.tiff", compression = "none" , bits.per.sample = 8)
+writeImage(img_t, "imgt_show.tiff", compression = "none" , bits.per.sample = 8)
+
+# Here I will make a test to get the automatic alignment
+
+
+
+# first we compute the centers
+
+n_ren <- dim(img1_cropped_neg)[2]
+n_col <- dim(img1_cropped_neg)[1]
+
+avg_ren <- sum((t(img1_cropped_neg) > 0) * (1:n_ren))/(sum(img1_cropped_neg > 0))
+avg_col <- sum((img1_cropped_neg > 0) * (1:n_col))/(sum(img1_cropped_neg > 0))
+
+# and then we compute the corresponding slope
+
+y <- array( t(t(img1_cropped_neg > 0.8) * (1:n_ren)))
+y <- y[y > 0]
+
+x <- array((img1_cropped_neg > 0.8) * (1:n_col))
+x <- x[x > 0]
+
+plot(x,-y)
+
+linear <- lm(y ~ x)
+
+#Now let's mark the axis we found in the image
+img1_aux <- img1_cropped_neg
+max_value <- max(img1_aux)
+
+for(j in 1:n_ren){
+  i <- round((1/linear$coefficients[2])*(j - linear$coefficients[1]))
+  if(1 <= i && i<=n_col)
+    img1_aux[i, j] <- max_value
+}
+
+display(img1_aux)
+
+
+linear2 <- lm(x ~ y)
+
+img2_aux <- img1_cropped_neg
+
+for(j in 1:n_ren){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    img2_aux[i, j] <- max_value
+}
+
+display(img2_aux)
+
+writeImage(img2_aux, "img1_axis.tiff", compression = "none" , bits.per.sample = 8)
+
+## we need to find the coordinates of the pixels where the axis crosses the edge
+
+ren_upper <- 0
+col_upper <- 0
+ren_lower <- 0
+col_lower <- 0
+
+for(j in 1:n_ren){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    if(img1_cropped_neg[i,j] > 0.8) {
+    ren_upper <- j
+    col_upper <- i
+    break
+    }
+}
+
+for(j in n_ren:1){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    if(img1_cropped_neg[i,j] > 0.8) {
+    ren_lower <- j
+    col_lower <- i
+    break
+    }
+}
+
+ren_middle <- round(mean(y))
+col_middle <- round(mean(x))
+
+
+
+
+#let's do the same with the image 2
+
+# first we compute the centers
+
+n_ren <- dim(img2_cropped_neg)[2]
+n_col <- dim(img2_cropped_neg)[1]
+
+avg_ren <- sum((t(img2_cropped_neg) > 0) * (1:n_ren))/(sum(img2_cropped_neg > 0))
+avg_col <- sum((img2_cropped_neg > 0) * (1:n_col))/(sum(img2_cropped_neg > 0))
+
+# and then we compute the corresponding slope
+
+y <- array( t(t(img2_cropped_neg > 0.8) * (1:n_ren)))
+y <- y[y > 0]
+
+x <- array((img2_cropped_neg > 0.8) * (1:n_col))
+x <- x[x > 0]
+
+plot(x,-y)
+
+linear <- lm(y ~ x)
+
+#Now let's mark the axis we found in the image
+img1_aux <- img2_cropped_neg
+max_value <- max(img1_aux)
+
+for(j in 1:n_ren){
+  i <- round((1/linear$coefficients[2])*(j - linear$coefficients[1]))
+  if(1 <= i && i<=n_col)
+    img1_aux[i, j] <- max_value
+}
+
+display(img1_aux)
+
+
+linear2 <- lm(x ~ y)
+
+img2_aux <- img2_cropped_neg
+
+for(j in 1:n_ren){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    img2_aux[i, j] <- max_value
+}
+
+display(img2_aux) 
+
+writeImage(img2_aux, "img2_axis.tiff", compression = "none" , bits.per.sample = 8)
+
+## Here we need to obtain the axis of the upper, middle and lower points
+
+## we need to find the coordinates of the pixels where the axis crosses the edge
+
+ren_upper2 <- 0
+col_upper2 <- 0
+ren_lower2 <- 0
+col_lower2 <- 0
+
+for(j in 1:n_ren){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    if(img2_cropped_neg[i,j] > 0.8) {
+    ren_upper2 <- j
+    col_upper2 <- i
+    break
+    }
+}
+
+for(j in n_ren:1){
+  i <- round(linear2$coefficients[1] + linear2$coefficients[2]*j)
+  if(1 <= i && i<=n_col)
+    if(img2_cropped_neg[i,j] > 0.8) {
+    ren_lower2 <- j
+    col_lower2 <- i
+    break
+    }
+}
+
+ren_middle2 <- round(mean(y))
+col_middle2 <- round(mean(x))
+
+## And here we need to do the actual transformation
+
+# points_1 <- c(col_upper, ren_upper, col_middle, ren_middle, col_lower, ren_lower)
+# points_2 <- c(col_upper2, ren_upper2, col_middle2, ren_middle2, col_lower2, ren_lower2)
+
+# points_1 <- c(col_upper, ren_upper, col_lower, ren_lower)
+# points_2 <- c(col_upper2, ren_upper2, col_lower2, ren_lower2)
+
+points_1 <- c(col_middle, ren_middle, col_upper, ren_upper)
+points_2 <- c(col_middle2, ren_middle2, col_upper2, ren_upper2)
+
+# img_t <- transformImage(206, 530, img1_cropped_neg, img2_cropped_neg, points_1, points_2)
+
+img_t <- transformImage2P(206, 530, img1_cropped_neg, img2_cropped_neg, points_1, points_2)
+
+display(img_t, method = "raster")
+display(img_t)
+
+display(img1_cropped_neg)
+display(img2_cropped_neg)
+
+writeImage(img1_cropped_neg, "img1_show.tiff", compression = "none", bits.per.sample = 8)
+writeImage(img2_cropped_neg, "img2_show.tiff", compression = "none" , bits.per.sample = 8)
+writeImage(img_t, "imgt2_show.tiff", compression = "none" , bits.per.sample = 8)
+
+
+# let's fill out the points we will use to make tests
+P1 <- matrix(c(col_upper, ren_upper, 1,
+               col_middle, ren_middle, 1,
+               col_lower, ren_lower, 1),
+             3, 3)
+
+P2 <- matrix(c(col_upper2, ren_upper2, 1,
+               col_middle2, ren_middle2, 1,
+               col_lower2, ren_lower2, 1),
+             3, 3)
+
+T <- P2 %*% solve(P1)
+
+#now we can compute the transformation
+
+
+
+
+
+
+
+
+# we read and display the image
+
+img1 <- readImage("sandals_G_L_01.tiff")
+
+display(img, method = "raster")
+
+print(img, short=TRUE)
+
+# we crop the image
+
+img_cropped <- img[161:(1965-160), 161:(4563-160)]
+
+
+
+## Load packages to be used
+library(tiff)
+
+## Setting images directory, reading image names and writing image
+## adresses.  img_dir <-
+## c("/home/guillermo/Desktop/Shoe_data_everspry/") img_filenames <-
+## list.files(img_dir, pattern = ".tiff") img_adr <- paste0(img_dir,
+## img_filenames)
+
+## Read only onge image
+img <- tiff::readTIFF(img_adr[1])
+dim(img)
+
+## Print image with ruler
+image(img, col = gray.colors(128), axes = FALSE)
+
+```
+
+Here I am just doing some test while programming required functions.
